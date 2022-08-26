@@ -1,6 +1,9 @@
-const ELROND_API_DEVNET = 'devnet-api.elrond.com';
-const ELROND_API_TESTNET = 'testnet-api.elrond.com';
-const ELROND_API_MAINNET = 'api.elrond.com';
+import '@elrondnetwork/erdnest/lib/src/utils/extensions/date.extensions';
+import { NativeAuthSigner } from '@elrondnetwork/erdnest/lib/src/utils/native.auth.signer';
+
+const ELROND_API_DEVNET = 'https://devnet-api.elrond.com';
+const ELROND_API_TESTNET = 'https://testnet-api.elrond.com';
+const ELROND_API_MAINNET = 'https://api.elrond.com';
 const EXPIRY_SECONDS_DEFAULT = 60 * 60 * 24;
 
 const loginWalletWithContext = async (
@@ -8,18 +11,19 @@ const loginWalletWithContext = async (
   host: string,
   apiUrl: string,
   expirySeconds: number,
-  pemPath: string,
+  signerPrivateKeyPath: string,
 ): Promise<string> => {
   // TODO restore cached values
 
-  const res = JSON.stringify({
-    context,
+  const nativeAuthSigner = new NativeAuthSigner({
     host,
     apiUrl,
     expirySeconds,
-    pemPath,
-  }, null, 4);
-  return res;
+    signerPrivateKeyPath,
+  });
+  const nativeAuthToken = await nativeAuthSigner.getToken();
+
+  return nativeAuthToken.accessToken;
 }
 
 export const templateTags = [
