@@ -4,6 +4,7 @@ import { NativeAuthSigner } from '@elrondnetwork/erdnest/lib/src/utils/native.au
 const ELROND_API_DEVNET = 'https://devnet-api.elrond.com';
 const ELROND_API_TESTNET = 'https://testnet-api.elrond.com';
 const ELROND_API_MAINNET = 'https://api.elrond.com';
+
 const EXPIRY_SECONDS_DEFAULT = 60 * 60 * 24;
 
 const loginWalletWithContext = async (
@@ -13,7 +14,17 @@ const loginWalletWithContext = async (
   expirySeconds: number,
   signerPrivateKeyPath: string,
 ): Promise<string> => {
-  // TODO restore cached values
+  const cacheKey = Buffer.from([host, apiUrl, expirySeconds, signerPrivateKeyPath].join(':')).toString('base64');
+  const cacheDataRaw = await context.store.getItem(cacheKey);
+  if (cacheDataRaw) {
+    const cachedData = JSON.parse(cacheDataRaw);
+
+    const currentDate = new Date().addMinutes(1);
+    const expiryDate = new Date(cachedData?.expiryDate);
+    if (currentDate <= expiryDate) {
+      return cachedData.accessToken;
+    }
+  }
 
   const nativeAuthSigner = new NativeAuthSigner({
     host,
@@ -22,6 +33,8 @@ const loginWalletWithContext = async (
     signerPrivateKeyPath,
   });
   const nativeAuthToken = await nativeAuthSigner.getToken();
+
+  await context.store.setItem(cacheKey, JSON.stringify(nativeAuthToken));
 
   return nativeAuthToken.accessToken;
 }
