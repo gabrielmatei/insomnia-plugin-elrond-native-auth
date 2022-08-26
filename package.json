@@ -1,6 +1,6 @@
 {
   "name": "insomnia-plugin-elrond-native-auth",
-  "version": "1.1.3",
+  "version": "0.1.0",
   "description": "Native authentication - Insomnia plugin",
   "author": "Gabriel Matei <gabrielvmatei@gmail.com>",
   "license": "ISC",
