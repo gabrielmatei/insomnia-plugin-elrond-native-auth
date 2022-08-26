@@ -44,7 +44,7 @@ export const templateTags = [
     run: loginWalletWithContext,
     name: 'ElrondNativeAuth',
     displayName: 'Elrond Native-Auth',
-    description: 'Insomnia plugin to authenticate via Elrond Native-Auth',
+    description: 'Native authentication - Insomnia plugin',
     args: [
       {
         displayName: 'Host',

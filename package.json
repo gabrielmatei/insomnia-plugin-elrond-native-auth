@@ -1,7 +1,7 @@
 {
   "name": "insomnia-plugin-elrond-native-auth",
   "version": "1.1.3",
-  "description": "Insomnia plugin for signing in via Elrond Native-Auth",
+  "description": "Native authentication - Insomnia plugin",
   "author": "Gabriel Matei <gabrielvmatei@gmail.com>",
   "license": "ISC",
   "main": "plugin.js",
@@ -14,12 +14,15 @@
   },
   "homepage": "https://github.com/gabrielmatei/insomnia-plugin-elrond-native-auth#readme",
   "keywords": [
+    "elrond",
+    "native",
+    "auth",
     "insomnia"
   ],
   "insomnia": {
     "name": "elrond-native-auth",
     "displayName": "Elrond Native-Auth",
-    "description": "Insomnia plugin to authenticate via Elrond Native-Auth",
+    "description": "Native authentication - Insomnia plugin",
     "applications": {
       "core": "*"
     }
