@@ -1,9 +1,14 @@
 import '@elrondnetwork/erdnest/lib/src/utils/extensions/date.extensions';
 import { NativeAuthSigner } from '@elrondnetwork/erdnest/lib/src/utils/native.auth.signer';
+import { loginWalletWithMaiarId } from './maiar.id.login';
 
 const ELROND_API_DEVNET = 'https://devnet-api.elrond.com';
 const ELROND_API_TESTNET = 'https://testnet-api.elrond.com';
 const ELROND_API_MAINNET = 'https://api.elrond.com';
+
+const MAIAR_ID_API_DEVNET = 'https://devnet-id.maiar.com/api/v1';
+const MAIAR_ID_API_TESTNET = 'https://testnet-id.maiar.com/api/v1';
+const MAIAR_ID_API_MAINNET = 'https://id.maiar.com/api/v1';
 
 const EXPIRY_SECONDS_DEFAULT = 60 * 60 * 24;
 
@@ -86,4 +91,37 @@ export const templateTags = [
       },
     ],
   },
+  {
+    run: loginWalletWithMaiarId,
+    name: 'ElrondMaiarIdAuth',
+    displayName: 'Elrond Maiar ID - Auth',
+    description: 'Maiar ID authentication - Insomnia plugin',
+    args: [
+      {
+        displayName: 'Maiar ID Api URL',
+        type: 'enum',
+        validate: (arg: string) => arg ? '' : 'Required',
+        defaultValue: MAIAR_ID_API_MAINNET,
+        options: [
+          {
+            displayName: 'Devnet',
+            value: MAIAR_ID_API_DEVNET,
+          },
+          {
+            displayName: 'Testnet',
+            value: MAIAR_ID_API_TESTNET,
+          },
+          {
+            displayName: 'Mainnet',
+            value: MAIAR_ID_API_MAINNET,
+          },
+        ]
+      },
+      {
+        displayName: 'PEM Path',
+        type: 'string',
+        validate: (arg: string) => arg ? '' : 'Required',
+      },
+    ]
+  }
 ];
