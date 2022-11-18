@@ -1,7 +1,7 @@
 import '@elrondnetwork/erdnest/lib/src/utils/extensions/date.extensions';
-import { NativeAuthSigner } from '@elrondnetwork/erdnest/lib/src/utils/native.auth.signer';
 import { loginWalletWithMaiarId } from './maiar.id.login';
-import { signAndSendTransactions } from './sing-and-send-transactions.hook';
+import { loginWalletWithContext } from './native-auth.login';
+// import { signAndSendTransactions } from './sing-and-send-transactions.hook';
 
 const ELROND_API_DEVNET = 'https://devnet-api.elrond.com';
 const ELROND_API_TESTNET = 'https://testnet-api.elrond.com';
@@ -12,38 +12,6 @@ const MAIAR_ID_API_TESTNET = 'https://testnet-id.maiar.com/api/v1';
 const MAIAR_ID_API_MAINNET = 'https://id.maiar.com/api/v1';
 
 const EXPIRY_SECONDS_DEFAULT = 60 * 60 * 24;
-
-const loginWalletWithContext = async (
-  context: any,
-  host: string,
-  apiUrl: string,
-  expirySeconds: number,
-  signerPrivateKeyPath: string,
-): Promise<string> => {
-  const cacheKey = Buffer.from([host, apiUrl, expirySeconds, signerPrivateKeyPath].join(':')).toString('base64');
-  const cacheDataRaw = await context.store.getItem(cacheKey);
-  if (cacheDataRaw) {
-    const cachedData = JSON.parse(cacheDataRaw);
-
-    const currentDate = new Date().addMinutes(1);
-    const expiryDate = new Date(cachedData?.expiryDate);
-    if (currentDate <= expiryDate) {
-      return cachedData.accessToken;
-    }
-  }
-
-  const nativeAuthSigner = new NativeAuthSigner({
-    host,
-    apiUrl,
-    expirySeconds,
-    signerPrivateKeyPath,
-  });
-  const nativeAuthToken = await nativeAuthSigner.getToken();
-
-  await context.store.setItem(cacheKey, JSON.stringify(nativeAuthToken));
-
-  return nativeAuthToken.accessToken;
-}
 
 export const templateTags = [
   {
@@ -86,7 +54,7 @@ export const templateTags = [
         description: 'TTL that will be encoded in the access token. TTL that will be encoded in the access token.'
       },
       {
-        displayName: 'PEM Path',
+        displayName: 'PEM Content',
         type: 'string',
         validate: (arg: string) => arg ? '' : 'Required',
       },
@@ -119,7 +87,7 @@ export const templateTags = [
         ]
       },
       {
-        displayName: 'PEM Path',
+        displayName: 'PEM Content',
         type: 'string',
         validate: (arg: string) => arg ? '' : 'Required',
       },

@@ -9,13 +9,11 @@ const getLoginTokenFromMaiarId = async (maiarIdUrl: string) => {
   return data.loginToken;
 }
 
-const getJwt = async (maiarIdUrl: string, signerPrivateKeyPath: string) => {
+const getJwt = async (maiarIdUrl: string, privateKey: string) => {
   try {
     const loginToken = await getLoginTokenFromMaiarId(maiarIdUrl);
 
-    const pemFile = await fs.readFile(signerPrivateKeyPath).then(content=>content.toString());
-    const pemKey = pemFile.toString();
-    const userSigner = UserSigner.fromPem(pemKey);
+    const userSigner = UserSigner.fromPem(privateKey);
 
     const userAddress = userSigner.getAddress().bech32();
     
@@ -41,9 +39,9 @@ const getJwt = async (maiarIdUrl: string, signerPrivateKeyPath: string) => {
 export const loginWalletWithMaiarId = async (
   context: any,
   maiarIdUrl: string,
-  signerPrivateKeyPath: string,
+  privateKey: string,
 ): Promise<string> => {
-  const cacheKey = Buffer.from([maiarIdUrl, signerPrivateKeyPath].join(':')).toString('base64');
+  const cacheKey = Buffer.from([maiarIdUrl, privateKey].join(':')).toString('base64');
   const cacheDataRaw = await context.store.getItem(cacheKey);
   if (cacheDataRaw) {
     const cachedData = JSON.parse(cacheDataRaw);
@@ -55,7 +53,7 @@ export const loginWalletWithMaiarId = async (
     }
   }
 
-  const jwt = await getJwt(maiarIdUrl, signerPrivateKeyPath);
+  const jwt = await getJwt(maiarIdUrl, privateKey);
 
   const decoded = jwt_decode<any>(jwt);
 
