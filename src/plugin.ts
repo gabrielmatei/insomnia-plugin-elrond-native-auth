@@ -1,6 +1,7 @@
 import '@elrondnetwork/erdnest/lib/src/utils/extensions/date.extensions';
 import { NativeAuthSigner } from '@elrondnetwork/erdnest/lib/src/utils/native.auth.signer';
 import { loginWalletWithMaiarId } from './maiar.id.login';
+import { signAndSendTransactions } from './sing-and-send-transactions.hook';
 
 const ELROND_API_DEVNET = 'https://devnet-api.elrond.com';
 const ELROND_API_TESTNET = 'https://testnet-api.elrond.com';
@@ -125,3 +126,7 @@ export const templateTags = [
     ]
   }
 ];
+
+// export const responseHooks = [
+//   signAndSendTransactions
+// ];
