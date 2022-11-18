@@ -9,6 +9,7 @@ export const loginWalletWithContext = async (
   privateKey: string,
 ): Promise<string> => {
   const cacheKey = Buffer.from([host, apiUrl, expirySeconds, privateKey].join(':')).toString('base64');
+  
   const cacheDataRaw = await context.store.getItem(cacheKey);
   if (cacheDataRaw) {
     const cachedData = JSON.parse(cacheDataRaw);
@@ -16,7 +17,7 @@ export const loginWalletWithContext = async (
     const currentDate = new Date().addMinutes(1);
     const expiryDate = new Date(cachedData?.expiryDate);
     if (currentDate <= expiryDate) {
-      return cachedData.accessToken;
+      return cachedData.token;
     }
   }
 
