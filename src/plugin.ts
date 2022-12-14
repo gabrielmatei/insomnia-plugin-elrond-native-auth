@@ -11,6 +11,11 @@ const MAIAR_ID_API_DEVNET = 'https://devnet-id.maiar.com/api/v1';
 const MAIAR_ID_API_TESTNET = 'https://testnet-id.maiar.com/api/v1';
 const MAIAR_ID_API_MAINNET = 'https://id.maiar.com/api/v1';
 
+const SHARD_0 = '0';
+const SHARD_1 = '1';
+const SHARD_2 = '2';
+const SHARD_METACHAIN = '4294967295';
+
 const EXPIRY_SECONDS_DEFAULT = 60 * 60 * 24;
 
 export const templateTags = [
@@ -44,6 +49,35 @@ export const templateTags = [
           {
             displayName: 'Mainnet',
             value: ELROND_API_MAINNET,
+          },
+        ]
+      },
+      {
+        displayName: 'Blockchain shard',
+        type: 'enum',
+        defaultValue: '-',
+        validate: (arg: string) => arg ? '' : 'Required',
+        description: 'Shard from which it will be fetched the latest block',
+        options: [
+          {
+            displayName: '-',
+            value: '-',
+          },
+          {
+            displayName: 'Shard 0',
+            value: SHARD_0,
+          },
+          {
+            displayName: 'Shard 1',
+            value: SHARD_1,
+          },
+          {
+            displayName: 'Shard 2',
+            value: SHARD_2,
+          }, 
+          {
+            displayName: 'Metachain',
+            value: SHARD_METACHAIN,
           },
         ]
       },

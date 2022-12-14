@@ -5,11 +5,20 @@ export const loginWalletWithContext = async (
   context: any,
   host: string,
   apiUrl: string,
+  shard: string,
   expirySeconds: number,
   privateKey: string,
 ): Promise<string> => {
-  const cacheKey = Buffer.from([host, apiUrl, expirySeconds, privateKey].join(':')).toString('base64');
-  
+  let blockHashShard: number | undefined = undefined;
+  if (shard !== '-') {
+    blockHashShard = parseInt(shard);
+  }
+
+  const args = [host, apiUrl, expirySeconds, privateKey, blockHashShard];
+  console.log(args);
+
+  const cacheKey = Buffer.from(args.join(':')).toString('base64');
+
   const cacheDataRaw = await context.store.getItem(cacheKey);
   if (cacheDataRaw) {
     const cachedData = JSON.parse(cacheDataRaw);
@@ -26,7 +35,9 @@ export const loginWalletWithContext = async (
     apiUrl,
     expirySeconds,
     privateKey,
+    blockHashShard,
   });
+
   const nativeAuthToken = await nativeAuthSigner.getToken();
 
   await context.store.setItem(cacheKey, JSON.stringify(nativeAuthToken));
