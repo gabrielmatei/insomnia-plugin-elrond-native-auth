@@ -4,6 +4,10 @@ import { SignableMessage } from "@elrondnetwork/erdjs/out";
 const fs = require("fs/promises");
 import jwt_decode from "jwt-decode";
 
+const MAIAR_ID_API_DEVNET = 'https://devnet-id.maiar.com/api/v1';
+const MAIAR_ID_API_TESTNET = 'https://testnet-id.maiar.com/api/v1';
+const MAIAR_ID_API_MAINNET = 'https://id.maiar.com/api/v1';
+
 const getLoginTokenFromMaiarId = async (maiarIdUrl: string) => {
   const { data } = await axios.post(`${maiarIdUrl}/login/init`, {});
   return data.loginToken;
@@ -16,7 +20,7 @@ const getJwt = async (maiarIdUrl: string, privateKey: string) => {
     const userSigner = UserSigner.fromPem(privateKey);
 
     const userAddress = userSigner.getAddress().bech32();
-    
+
     const messageToSign = userAddress + loginToken + JSON.stringify({});
     const message = new SignableMessage({
       message: Buffer.from(messageToSign)
@@ -36,7 +40,7 @@ const getJwt = async (maiarIdUrl: string, privateKey: string) => {
   }
 }
 
-export const loginWalletWithMaiarId = async (
+const loginWalletWithMaiarId = async (
   context: any,
   maiarIdUrl: string,
   privateKey: string,
@@ -65,3 +69,36 @@ export const loginWalletWithMaiarId = async (
   return jwt;
 }
 
+export default {
+  run: loginWalletWithMaiarId,
+  name: 'ElrondMaiarIdAuth',
+  displayName: 'Elrond Maiar ID - Auth',
+  description: 'Maiar ID authentication - Insomnia plugin',
+  args: [
+    {
+      displayName: 'Maiar ID Api URL',
+      type: 'enum',
+      validate: (arg: string) => arg ? '' : 'Required',
+      defaultValue: MAIAR_ID_API_MAINNET,
+      options: [
+        {
+          displayName: 'Devnet',
+          value: MAIAR_ID_API_DEVNET,
+        },
+        {
+          displayName: 'Testnet',
+          value: MAIAR_ID_API_TESTNET,
+        },
+        {
+          displayName: 'Mainnet',
+          value: MAIAR_ID_API_MAINNET,
+        },
+      ]
+    },
+    {
+      displayName: 'PEM Content',
+      type: 'string',
+      validate: (arg: string) => arg ? '' : 'Required',
+    },
+  ]
+};
